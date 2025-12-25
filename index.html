@@ -42,7 +42,7 @@
                 width: 210mm !important;
                 margin: 0 auto !important;
             }
-            /* 確保圖片在列印時顯示 */
+            /* 確保圖片在列印時顯示彩色與細節 */
             img {
                 print-color-adjust: exact;
                 -webkit-print-color-adjust: exact;
@@ -57,6 +57,8 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
             padding: 20mm;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -83,11 +85,12 @@
 </head>
 <body class="text-slate-900">
 
-    <!-- 導覽列 -->
+    <!-- 導覽列 (Web 顯示用) -->
     <nav class="bg-white border-b sticky top-0 z-50 no-print px-6 py-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-4">
+            <!-- 網頁最上方 Logo -->
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN49SX0y6kDNLFOnqemB60ZNlwNYVuOUYFxg&s" alt="Logo" class="h-10 w-auto rounded shadow-sm">
-            <h1 class="text-xl font-black tracking-tight">長輩數學練習產生器</h1>
+            <h1 class="text-xl font-black tracking-tight text-slate-800">長輩數學練習產生器</h1>
         </div>
         <div class="flex gap-3">
             <button id="backBtn" class="hidden px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-md transition-colors font-medium">
@@ -182,6 +185,7 @@
         // 初始化圖示
         lucide.createIcons();
 
+        // 定義全域 Logo URL
         const logoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN49SX0y6kDNLFOnqemB60ZNlwNYVuOUYFxg&s";
 
         // 應用程式狀態
@@ -307,10 +311,11 @@
             return `
                 <div class="a4-page">
                     <div class="border-b-4 border-black pb-4 mb-10 flex justify-between items-end">
+                        <!-- 列印時左上角的 Logo -->
                         <div class="flex items-center gap-4">
-                            <img src="${logoUrl}" class="h-14 w-auto rounded shadow-sm">
+                            <img src="${logoUrl}" alt="Logo" class="h-16 w-auto rounded shadow-sm">
                             <div>
-                                <h3 class="text-4xl font-black mb-1">數學練習卷 <span class="text-blue-600">#${index}</span></h3>
+                                <h3 class="text-4xl font-black mb-1 text-slate-900">數學練習卷 <span class="text-blue-600">#${index}</span></h3>
                                 <p class="text-slate-500 font-bold italic">難度：${difficultyMap[config.difficulty].label}</p>
                             </div>
                         </div>
@@ -320,7 +325,7 @@
                         </div>
                     </div>
 
-                    <div class="grid ${gridClass}">
+                    <div class="grid ${gridClass} flex-grow">
                         ${problems.map((p, i) => `
                             <div class="flex items-center ${fontSize} font-bold">
                                 <span class="w-14 text-slate-300 text-xl font-normal">(${i + 1})</span>
@@ -332,7 +337,7 @@
                         `).join('')}
                     </div>
 
-                    <div class="absolute bottom-10 left-0 right-0 text-center text-slate-400 italic font-medium">
+                    <div class="mt-auto pt-8 text-center text-slate-400 italic font-medium">
                         多思考、多練習，腦袋更靈活！
                     </div>
                 </div>
@@ -343,7 +348,8 @@
             return `
                 <div class="a4-page">
                     <div class="border-b-4 border-slate-300 pb-4 mb-10 flex items-center gap-4">
-                        <img src="${logoUrl}" class="h-10 w-auto opacity-70 grayscale">
+                        <!-- 列印時答案頁左上角的 Logo -->
+                        <img src="${logoUrl}" alt="Logo" class="h-12 w-auto opacity-70 grayscale rounded">
                         <h3 class="text-3xl font-black text-slate-700">答案頁 <span class="text-blue-500">#${index}</span></h3>
                     </div>
                     <div class="grid grid-cols-5 gap-6">
@@ -358,13 +364,16 @@
             `;
         }
 
+        // 修改設定按鈕
         document.getElementById('backBtn').addEventListener('click', () => {
             document.getElementById('configSection').classList.remove('hidden');
             document.getElementById('previewSection').classList.add('hidden');
             document.getElementById('backBtn').classList.add('hidden');
             document.getElementById('printBtn').classList.add('hidden');
+            window.scrollTo(0, 0);
         });
 
+        // 列印按鈕
         document.getElementById('printBtn').addEventListener('click', () => {
             window.print();
         });
